@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>可以記點餐比較不會分錢分到爆炸</title>
+</head>
+<body style="background-color: #1b0b01; margin: 0; height: 100vh;">
+    <style>
+        label {
+    font-size: 17px;
+  }
+
+        /* 彈窗本體的樣式 */
+dialog {
+  input[type="text"] {
+      width: 250px;              /* 寬度 */
+    height: 40px; 
+  }
+  border: none;
+  border-radius: 12px;    /* 延續您喜歡的圓角風格 */
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;       /* 限制最大寬度 */
+  box-shadow: 0 4px 20px #ffffff9c; /* 淡淡的陰影 */
+}
+
+/* 彈窗後方的背景遮罩（Backdrop） */
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明黑底 */
+  backdrop-filter: blur(4px);           /* 讓背景微微模糊（選填，效果很好看） */
+}
+
+/* 彈窗內的按鈕樣式 */
+dialog button {
+  margin-top: 15px;
+  padding: 8px 16px;
+  border: none;
+  background-color: #0066cc;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+dialog button:hover {
+  background-color: #0052a3;
+}
+.form-group{
+  input[type="text"] {
+      width: 250px;              /* 寬度 */
+    height: 20px; 
+  }
+  font-weight: bold;
+     line-height:0.1;
+     background-color: #e48d61;
+     height: 145px;
+     padding: 3px 7px;
+     margin-left: 6px;
+     border-radius: 2px;
+     width: 270px;
+    box-shadow: 0 1px 8px #ffffff9c;
+
+}
+  
+  .container {
+    display: flex;
+    flex-wrap: nowrap; /* 強制不換行 */
+    align-items: flex-start;
+    gap: 20px;
+  
+}
+
+
+        .accordion {
+  width: 115px;
+  border:none;
+  font-family: sans-serif;
+}
+.card {
+            background: rgb(255, 195, 110);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px #ffffff9c;
+            margin: 25px;
+            margin-left: 6px;
+            width: 245px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            margin-left: 0px;
+            border-left: 5px solid var(--primary);
+            padding-left: 3px;
+            color: var(--primary);
+        }
+.summary-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin-left: -10px;
+            width: 245px;
+            background: #f8f9fa;
+            margin-bottom: 8px;
+            border-radius: 2px;
+            font-weight: bold;
+        }
+.toggle {
+  display: none; /* 隱藏原生 checkbox */
+ 
+}
+
+.menu-title {
+    margin-left: 7px;
+  display: block;
+  background-color: #fbe554;
+  padding: 9px 12px;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 2px;
+  width: 93px;
+    box-shadow: 0 2px 5px #ffffff9c;
+
+}
+
+.menu-title:hover {
+   transition: background-color 0.1s ease; /* 讓變色過程有滑順的動畫效果 */
+
+  background-color: #f8ea53;
+}
+.menu-title:active{
+  background-color: #e9e2a8;
+}
+
+.accordion{
+
+  margin:0;
+}
+.submenu {
+   transition: max-height 0.5s cubic-bezier(0.5, 0, 0.7, 1); /* 加入過渡效果 */
+  width:fit-content;
+  max-height: 0;
+  overflow: hidden;
+  padding: 0;
+  margin: 5px;
+}
+
+.submenu li a {
+
+  display: block;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: #ffffff;
+  background-color: #c55a45;
+  border-radius: 30px;
+  margin: 3px;
+  font-size: 12px;
+    box-shadow: 0 1px 3px #ffffff9c;
+
+}
+
+.submenu li a:hover {
+   transition: background-color 0.1s ease; /* 讓變色過程有滑順的動畫效果 */
+
+  background-color: #bd7878;
+}
+.submenu li a:active{
+  background-color: #7c4b4b;
+}
+/* 當 checkbox 被勾選時，展開對應的子選單 */
+.toggle:checked ~ .submenu {
+  max-height: 300px; /* 設定足夠容納子選單的高度 */
+  width: fit-content;
+    
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 1, 0.5);; /* 加入過渡效果 */
+}
+.title{
+    line-height: 8px; 
+    margin-top: 30px;
+    margin-bottom: 25px;
+    margin-left: 10px;
+    color: #ffffff;
+}
+.aaaidn{
+    margin: 5px;
+    margin-left: 0px;
+}
+.image{
+    margin-left: 5px;}
+.urname{
+  font-weight: bold;
+  width: 290px;
+  background-color: #bbbbbb;
+  margin-left: 5px;
+  padding: 0px 5px;
+  font-size: 15px;
+  
+}
+
+.order-form{
+  input[type="text"] {
+      width: 120px;              /* 寬度 */
+    height: 20px; 
+  }
+  font-weight: bold;
+  display: none;
+  line-height: 0;
+  margin-top: 25px;
+  margin-bottom: 30px;
+  margin-left: -2px;
+  color: #f6f2f1;
+  background-color: #7c7c7c;
+  border:15px solid #7c7c7c;
+  width: 120px;
+  border-radius: 2px;
+  box-shadow: 0 1px 8px #ffffff9c;
+}
+/* 選擇網頁上所有的文字輸入框 */
+input[type="text"] {             /* 高度（稍微拉高更好點擊） */
+    padding: 0 12px;           /* 內襯：讓文字與左右邊框保持舒服的距離 */
+    font-size: 16px;           /* 文字大小 */
+    color: rgb(57, 26, 8);     /* 文字顏色（搭配你送出按鈕的深啡色） */
+    
+    background-color: #fafafa; /* 預設淡淡的淺灰背景 */
+    border: 1px solid #dcdca7; /* 邊框粗細與顏色 */
+    border-radius: 4px;        /* 邊框微圓角 */
+    
+    outline: none;             /* 拔除瀏覽器預設的藍色外框 */
+    box-sizing: border-box;    /* 必加！確保寬度高度包含 padding，外觀不變形 */
+    transition: all 0.3s ease; /* 讓變色過程有滑順的動畫效果 */
+}
+
+/* 當滑鼠點擊「任意」輸入框進入打字狀態時（Focus） */
+input[type="text"]:focus {
+    border-color: rgb(57, 26, 8);        /* 點擊時邊框變成按鈕的啡色 */
+    background-color: #ffffff;           /* 背景變純白 */
+    box-shadow: 0 0 6px rgba(57, 26, 8, 0.15); /* 加上淡淡的啡色發光陰影 */
+}
+
+/* 修改所有輸入框預設提示文字（placeholder）的顏色 */
+input[type="text"]::placeholder {
+    color: #a0a0a0;
+    font-size: 14px;
+}
+/* 強制讓 .btcl 底下的按鈕在滑鼠移過去時變色 */
+.btcl button:hover {
+ transition: background-color 0.1s ease; /* 讓變色過程有滑順的動畫效果 */
+    background-color: #e2dad6 !important; /* 稍微變深的灰色 */
+}
+
+/* 強制讓按鈕在點下去那一瞬間變色 */
+.btcl button:active {
+    background-color: rgb(130, 113, 103) !important; /* 變成你的深啡色 */
+    color: #010101 !important;                   /* 字變白色 */
+}
+#myImage {
+      display: block;
+  /* 這裡維持你原本的固定寬度 */
+    
+    /* 關鍵：讓高度和透明度在 0.4 秒內一起滑順變化 */
+    transition: height 0.4s ease-out, opacity 0.4s ease-out; 
+    object-fit: cover;
+}
+#orderTable {
+  background-color: #f8f9fa;
+  padding: 0px 0px;
+  width: 262px;
+  margin-left:-9px;
+  border-radius: 2px;
+}
+.irdn{
+font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-left: 0px;
+            border-left: 5px solid var(--primary);
+            padding-left: 3px;
+            color: var(--primary);
+
+
+}
+ #image-dialog {
+      border: none;
+      border-radius: 8px;
+      padding: 0;
+      background: transparent;
+      max-width: 85vw; /* 放大圖最大寬度不超過螢幕的 85% */
+      max-height: 85vh; /* 放大圖最大高度不超過螢幕的 85% */
+    }
+
+    /* 彈窗放大後的圖片 */
+    #dialog-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 85vh;
+      object-fit: contain;
+    }
+
+    /* 彈窗背後的遮罩層（背景變暗） */
+    #image-dialog::backdrop {
+      background-color: rgba(0, 0, 0, 0.75); /* 0.75 是黑色遮罩的透明度 */
+    }
+    </style>
+<style>
+  body {
+    /* 優先使用微軟正黑體，若沒有則使用系統預設的無襯線字體 */
+    font-family: "Microsoft JhengHei", sans-serif; 
+  }
+</style>
+
+<!-- 網頁原生彈窗 -->
+<dialog id="myModal">
+  <h3 id="modalTitle">什麼人</h3>
+  <p id="modalBody">你誰啊</p>
+ <input type="text" id="usernameInput" placeholder="what your name" autocomplete="off">
+  
+  <!-- 提交按鈕 -->
+  <button type="button" onclick="submitUsername()">確</button>
+
+</dialog>
+<div class="title">
+ <h3>可以記點餐比較不會分錢分到爆炸</h3>
+</div>
+ <div class="urname">
+ <p id="welcomeMessage"> </p>
+</div>
+ <div class="container">   
+<div class="accordion">
+  <!-- 第一組選單 -->
+  <div class="menu-item">
+    <input type="checkbox" id="menu1" class="toggle">
+    <label for="menu1" class="menu-title">食物-FOOD</label>
+    <ul class="submenu">
+      <li><a href="#" onclick="changeImg('frychicken.png',this); return false;">炸雞</a></li>
+      <li><a href="#" onclick="changeImg('riceball.png',this); return false;">飯糰</a></li>
+      <li><a href="#" onclick="changeImg('rice.png',this); return false;">肉燥飯</a></li>
+      <li><a href="#" onclick="changeImg('8.png',this); return false;">雲門舞集</a></li>
+      <li><a href="#" onclick="changeImg('4.png',this); return false;">我的三顆鍋貼</a></li>
+      <li><a href="#" onclick="changeImg('big.png',this); return false;">大鍋</a></li>
+    </ul>
+  </div>
+
+  <!-- 第二組選單 -->
+  <div class="menu-item">
+    <input type="checkbox" id="menu2" class="toggle">
+    <label for="menu2" class="menu-title">飲料-DRINK</label>
+    <ul class="submenu">
+      <li><a href="#" onclick="changeImg('50.jpg',this); return false;">50嵐</a></li>
+      <li><a href="#" onclick="changeImg('macu.png',this); return false;">麻古</a></li>
+      <li><a href="#" onclick="changeImg('up.png',this); return false;">上宇林</a></li>
+      <li><a href="#" onclick="changeImg('eattea.png',this); return false;">喫茶</a></li>
+      <li><a href="#" onclick="changeImg('kbk.png',this); return false;">可不可</a></li>
+      <li><a href="#" onclick="changeImg('plus.png',this); return false;">負負</a></li>
+    </ul>
+
+
+  </div>
+  </div>
+  <div class="image">
+  <img id="myImage" class="thumbnail" src="empty.png" width="140" onclick="openModal(this.src)">
+
+
+ <div class="order-form">
+   <p for="choice">點餐
+   </p>
+ <div class="aaaidn">
+   <input type="text" id="choice" placeholder="品項">
+ </div>
+ <div class="aaaidn">
+   <input type="text" id="price" placeholder="價格">
+ </div>
+  <div class="btcl">
+<button type="button" 
+        style="background-color: #f6f2f1; color: rgb(57, 26, 8); border: none; padding: 2px 9px; border-radius: 1px; cursor: pointer; transition: background-color 0.2s;" 
+        onmouseover="this.style.backgroundColor='#e2dad6'" 
+        onmouseout="this.style.backgroundColor='#f6f2f1'" 
+        onclick="sendout()">
+        送出
+</button>
+    </div>
+  </div>
+  </div>
+ </div>
+  <div class="form-group">
+   <p for="another shop">其他不在列表裡的
+   </p>
+   <input type="text" id="another shop" placeholder="店名">
+<div class="aaaidn">
+   <input type="text" id="another choice" placeholder="品項">
+</div>
+<div class="aaaidn">
+   <input type="text" id="another price" placeholder="價格">
+</div>
+  <div class="btcl">
+<button type="button" style="background-color: #f6f2f1; color: rgb(57, 26, 8); border: none; padding: 3px 10px; border-radius: 2px; cursor: pointer;" onclick="sendouta()">送出</button>
+    </div>
+  </div>
+
+ <div class="card">
+        <div class="card-title">點的東西</div>
+        <table id="orderTable">
+            <thead>
+                <tr>
+                    <th>人</th>
+                    <th>店</th>
+                    <th>食物</th>
+                    <th>錢</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 點餐資料將會動態生成在這裡 -->
+            </tbody>
+        </table>
+
+        <!-- 統計區塊 -->
+
+        <div class="irdn">要付的錢</div>
+        <div class="summary-controls" style="margin-bottom: 10px;">
+    <button onclick="switchSummary('shop')" id="btnShop" style="background: #a7a7a7; color: white; padding: 5px 10px; border-radius: 4px; border: none; cursor: pointer;">誰付這家店</button>
+    <button onclick="switchSummary('user')" id="btnUser" style="background: #ccc; color: white; padding: 5px 10px; border-radius: 4px; border: none; cursor: pointer;">你買了什麼</button>
+    <button type="button" id="resetPageButton" onclick="resetPage()" style="display: none; background: #AC5341; color: white; padding: 5px 10px; border-radius: 4px; border: none; cursor: pointer;">重置網頁</button>
+</div>
+        <ul class="summary-list" id="shopSummaryList"></ul>
+
+    </div>
+
+
+ <dialog id="image-dialog" onclick="closeModal()">
+  <img id="dialog-img" src="" alt="放大圖">
+</dialog>
+ <dialog id="my-dialog">
+  <h3>你確你付嗎</h3>
+  <button onclick="confirmDialogAction()">確</button>
+  <button onclick="this.closest('dialog').close()">不確</button>
+</dialog>
+<script>
+  const shopButtonLabels = new Map();
+  let activeTableButton = null;
+  function confirmDialogAction() {
+    if (!activeTableButton) {
+        console.error("錯誤：找不到當前點擊的表格按鈕！");
+        return;
+    }
+
+  
+    activeTableButton.textContent = usernamestore;
+    shopButtonLabels.set(activeTableButton.dataset.shopName, usernamestore);
+    document.getElementById("my-dialog").close();
+  }
+  let currentClickedButton = null;
+  // 1. 取得 HTML 元素
+  const modal = document.getElementById('myModal');
+  const usernameInput = document.getElementById('usernameInput');
+  const welcomeMessage = document.getElementById('welcomeMessage');
+  let shop = ""; // 用來存放點擊的店名
+  let usernamestore =""; // 取得輸入值並清除前後空白
+  // 2. 網頁載入完成後自動打開彈窗
+  window.onload = function() {
+    modal.showModal(); 
+  };
+  const dialog = document.getElementById('image-dialog');
+  const dialogImg = document.getElementById('dialog-img');
+
+  // 點擊縮圖時觸發：打開彈窗並載入圖片
+  function openModal(imgSrc) {
+    dialogImg.src = imgSrc;
+    dialog.showModal(); 
+  }
+
+  // 點擊放大圖時觸發：關閉彈窗
+  function closeModal() {
+    dialog.close();
+  }
+  function chunkText(text) {
+    // .{1,5} 代表每 5 個字切一塊，join("<br>") 代表中間用換行標籤連結
+    return text.match(/.{1,5}/g).join("<br>");
+}
+  function sendouta(){
+    let username = usernameInput.value.trim();
+    const anotherShop = document.getElementById('another shop').value.trim();
+    let anotherChoice = document.getElementById('another choice').value.trim();
+    const anotherPrice = document.getElementById('another price').value.trim();
+      if (anotherChoice === "" || anotherPrice === ""|| anotherShop === "") {
+        alert("請確認所有欄位都有填寫！");
+        return; // 終止程式，不往下執行
+    }
+  if (anotherPrice === "" || isNaN(Number(anotherPrice))) {
+    alert("bro不要亂寫");
+    return; // 攔截阻斷，不往下執行   
+  }
+  
+    if (anotherChoice.length > 5) {
+        anotherChoice = chunkText(anotherChoice);
+    }
+    if(username.length > 5) {
+        username = chunkText(username);
+    }
+    if (anotherShop.length > 5) {
+        anotherShop = chunkText(anotherShop);
+    }
+
+    const tbody = document.querySelector("#orderTable tbody");
+
+    // 4. 動態建立一列 <tr> 
+    const newRow = document.createElement("tr");
+
+    // 5. 設定這一列裡面的 HTML 內容（包含姓名、點餐、刪除按鈕）
+    newRow.innerHTML = `
+        <td>${username}</td>
+        <style>#orderTable td.clickable { cursor: pointer; color: #7c4b4b; text-decoration: bold; }</style>
+        <td class="clickable" onclick="fillInput(this)">${anotherShop}</td>
+        <td>${anotherChoice}</td>
+        <td>${anotherPrice}</td>
+    `;
+
+    // 6. 將新建立的 <tr> 塞進 <tbody> 裡面
+    tbody.appendChild(newRow);
+
+    // 7. 清空輸入欄，方便下一次輸入
+    document.getElementById("another shop").value = "";
+    document.getElementById("another choice").value = "";
+    document.getElementById("another price").value = "";
+  updateShopSummary(); // 👈 每次新增或刪除，都會幫你重刷店家清單
+}
+  function fillInput(element) {
+    // 🔍 讀取點擊格子的文字（如果之前因為超過 5 個字有換行，用 innerText 可以拿到正常的字）
+    const foodName = element.innerText; 
+    
+    // 🎯 直接把字塞回上方的點餐內容輸入框中！
+    document.getElementById("another shop").value = foodName;
+}
+    function sendout(){
+    let username = usernameInput.value.trim();
+    let choice = document.getElementById('choice').value.trim();
+    const price = document.getElementById('price').value.trim();
+      if (choice === "" || price === "") {
+        alert("請確認所有欄位都有填寫！");
+        return; // 終止程式，不往下執行
+    }if (price === "" || isNaN(Number(price))) {
+    alert("bro不要亂寫");
+    return; // 攔截阻斷，不往下執行
+}if (choice.length > 5) {
+        choice = chunkText(choice);
+    }
+    if(username.length > 5) {
+        username = chunkText(username);
+    }
+if (shop.length > 5) {
+        shop = chunkText(shop);
+    }
+    const tbody = document.querySelector("#orderTable tbody");
+
+    // 4. 動態建立一列 <tr> 
+    const newRow = document.createElement("tr");
+
+    // 5. 設定這一列裡面的 HTML 內容（包含姓名、點餐、刪除按鈕）
+    newRow.innerHTML = `
+        <td>${username}</td>
+        <td>${shop}</td>
+        <td>${choice}</td>
+        <td>${price}</td>
+       `;
+    // 6. 將新建立的 <tr> 塞進 <tbody> 裡面
+    tbody.appendChild(newRow);
+
+    // 7. 清空輸入欄，方便下一次輸入
+    document.getElementById("choice").value = "";
+    document.getElementById("price").value = "";
+    updateShopSummary(); // 👈 每次新增或刪除，都會幫你重刷店家清單
+
+}
+
+  // 3. 按下確認送出時執行的函式
+  function submitUsername() {
+    const username = usernameInput.value.trim(); // 取得輸入值並清除前後空白
+    
+    if (username === "") {
+      alert("請輸入有效的用戶名！"); // 如果沒寫名字，不給關閉並提示
+      return;
+    }
+
+    // 更新網頁上的歡迎文字
+    welcomeMessage.innerHTML = `你是<strong>${username}</strong>`;
+    usernamestore = username;
+    document.getElementById("resetPageButton").style.display =
+      username === "xi31415926" ? "inline-block" : "none";
+    // 關閉彈窗
+    modal.close();
+  }
+
+  function resetPage() {
+    if (usernamestore !== "xi31415926") {
+      return;
+    }
+    if (!confirm("確定要清空所有點餐紀錄並重置網頁嗎？")) {
+      return;
+    }
+
+    document.querySelector("#orderTable tbody").replaceChildren();
+    updateShopSummary();
+    window.location.reload();
+  }
+
+  // 4. 在輸入框按下 Enter 鍵也能直接送出（已補上缺少的括號）
+  usernameInput.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+      submitUsername();
+    }
+  }); // <-- 修正這裡的括號結構
+  function changeImg(fileName, element) {
+    const targetImage = document.getElementById('myImage');
+    const orderForm = document.querySelector('.order-form');
+    shop = element.textContent; // 👈 這行就是「讀取你點到的那一格的文字」
+
+    // 1. 點擊清單時，先讓點餐表單顯示出來
+    if (orderForm) {
+        orderForm.style.display = 'block';
+       
+    }
+
+    // 2. 先把舊圖片變透明（淡出）
+    targetImage.style.opacity = 0;
+
+    // 3. 在後台建立一個虛擬圖片，用來精準量測新圖片的高度
+    const tempImg = new Image();
+    tempImg.src = fileName;
+
+    // 4. 當新圖片在後台載入完成後，再同時執行「拉長高度」與「淡入」
+    tempImg.onload = function() {
+        // 計算新圖片應該要有的正確高度
+        const currentWidth = targetImage.offsetWidth || 400; 
+        const ratio = tempImg.height / tempImg.width;       
+        const newHeight = currentWidth * ratio;             
+
+        // 延遲一下下（等前面淡出完成），再把新圖放進去、拉長並變亮
+        setTimeout(function() {
+            targetImage.src = fileName;          // 換新圖
+            targetImage.style.height = newHeight + 'px'; // 慢慢拉長/縮短高度
+            targetImage.style.opacity = 1;       // 慢慢淡入變亮
+        }, 70);
+    };
+}    
+let currentMode = "shop";
+
+function switchSummary(mode) {
+    currentMode = mode;
+    const btnShop = document.getElementById("btnShop");
+    const btnUser = document.getElementById("btnUser");
+    
+    if (mode === "shop") {
+        btnShop.style.background = "#a7a7a7";
+        btnUser.style.background = "#ccc";
+    } else {
+        btnShop.style.background = "#ccc";
+        btnUser.style.background = "#a7a7a7"; 
+    }
+    updateShopSummary();
+}
+
+function updateShopSummary() {
+    const tbody = document.querySelector("#orderTable tbody");
+     if (!tbody) return;
+    const rows = tbody.querySelectorAll("tr");
+    let summaryList = document.getElementById("shopSummaryList") || document.querySelector(".summary-list");
+    if (!summaryList) return;
+
+    summaryList.innerHTML = "";
+
+    // 🌟 關鍵修改：不從網頁抓，直接改用您在前面已經存好的用戶名變數（假設變數叫 loginUser）
+    // ⚠️ 請把下面的 loginUser 改成您實際宣告的全域變數名稱
+    const currentUserName = usernamestore; 
+
+    if (currentMode === "shop") {
+    // 建立一個空物件來統計各店金額，格式如：{ "炸雞店": 120, "飲料店": 80 }
+    let shopTotals = {};
+
+    // 1. 遍歷每一列表格，累加各店金額
+    rows.forEach(row => {
+        const tds = row.querySelectorAll("td");
+        // 依您剛才的結構（姓名、店、項目、錢），店在第 2 格(index 1)，錢在第 4 格(index 3)
+        if (tds.length >= 4) {
+            const shopName = tds[1].innerText.trim();  
+            const price = Number(tds[3].innerText.trim()); 
+            
+            if (!isNaN(price)) {
+                if (!shopTotals[shopName]) {
+                    shopTotals[shopName] = 0;
+                }
+                shopTotals[shopName] += price;
+            }
+        }
+    });
+
+
+    // 4. 跑迴圈把最新算好的店家資料，變成 <li class="summary-item"> 塞進去
+    for (const shopName in shopTotals) {
+        const newLi = document.createElement("li");
+        newLi.className = "summary-item";
+        
+        // 🎯 完美符合需求：只放店名和它付的錢
+        newLi.innerHTML = `<button class="row-btn" style="background: #AC5341; color: white; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;"></button><strong>${shopName}</strong>：<span class="count-badge">${shopTotals[shopName]}</span> 億`;
+        const tableBtn = newLi.querySelector(".row-btn");
+        tableBtn.dataset.shopName = shopName;
+        tableBtn.textContent = shopButtonLabels.get(shopName) || "我付";
+        tableBtn.addEventListener("click", () => {
+          activeTableButton = tableBtn;
+          
+          document.getElementById("my-dialog").showModal();
+        });
+        summaryList.appendChild(newLi);
+    }
+}else {
+        // ==========================================
+        // 模式二：顯示【個人點餐】
+        // ==========================================
+        rows.forEach(row => {
+            const tds = row.querySelectorAll("td");
+            if (tds.length >= 4) {
+                const username = tds[0].innerText.trim();   
+                const shopName = tds[1].innerText.trim();   
+                const choice = tds[2].innerText.trim();     
+                const price = tds[3].innerText.trim();      
+
+                // 🔍 精准過濾：比對大表格裡的名字，是否與您的全域變數一模一樣
+                if (username === usernamestore) {
+                    const newLi = document.createElement("li");
+                    newLi.className = "summary-item";
+                    newLi.innerHTML = ` 【${shopName}】${choice}：<span class="count-badge">${price}</span> 億 <button style="background: #AC5341; color: white; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer;">刪除</button>`;
+                    newLi.querySelector("button").addEventListener("click", () => {
+                        row.remove();
+                        updateShopSummary();
+                    });
+                    
+                    summaryList.appendChild(newLi);
+                }
+            }
+        });
+        // 防呆
+        if (summaryList.children.length === 0) {
+            summaryList.innerHTML = `<li class="summary-item" style="color:#999;">${currentUserName}你還沒點欸</li>`;
+        }
+    }
+}
+
+
+
+
+</script>
+    </script>
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyCTCP1GoQ3BQxgcic85F7g_c7bQRvlez6w",
+    authDomain: "order-3d8e4.firebaseapp.com",
+    projectId: "order-3d8e4",
+    storageBucket: "order-3d8e4.firebasestorage.app",
+    messagingSenderId: "371985847056",
+    appId: "1:371985847056:web:60125e4738cc14df994b95",
+    measurementId: "G-19PS0EDL2Z"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+</body>
+</html>
